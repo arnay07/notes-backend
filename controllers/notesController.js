@@ -13,7 +13,7 @@ const getNotes = async (req, res) => {
   res.json(notes);
 };
 
-const getNoteById = async (req, res, next) => {
+const getNoteById = async (req, res) => {
   const note = await _getNoteById(req.params.id);
   if (note) {
     res.json(note);
@@ -37,7 +37,7 @@ const deleteNoteById = async (req, res) => {
   res.status(204).json(deletedNote);
 };
 
-const createNote = async (req, res, next) => {
+const createNote = async (req, res) => {
   const body = req.body;
   if (!body.content) {
     return res.status(400).json({ error: 'content missing' });

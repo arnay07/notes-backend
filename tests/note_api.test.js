@@ -3,21 +3,17 @@ const supertest = require('supertest');
 const app = require('../app');
 const Note = require('../models/note');
 const { initialNotes, nonExistingId, notesInDb } = require('./test_helper');
-const { _info, _error } = require('../utils/logger');
 
 const api = supertest(app);
 
 beforeEach(async () => {
   await Note.deleteMany({});
-  _info('cleared notes from db');
 
-  const noteObjects = initialNotes.map((note) => new Note(note));
-  const promiseArray = noteObjects.map((note) => note.save());
+  const promiseArray = initialNotes.map((note) => Note.create(note));
   await Promise.all(promiseArray);
 });
 
 test('notes are returned as json', async () => {
-  _info('entering test');
   await api
     .get('/api/notes')
     .expect(200)

@@ -1,6 +1,6 @@
 const Note = require('../models/note');
 
-const getNotes = (req, res) => Note.find({});
+const getNotes = () => Note.find({});
 
 const getNoteById = (id) => Note.findById(id);
 
