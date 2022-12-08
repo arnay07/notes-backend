@@ -34,6 +34,9 @@ const updateNoteById = async (req, res) => {
 
 const deleteNoteById = async (req, res) => {
   const deletedNote = await _deleteNoteById(req.params.id);
+  if (!deletedNote) {
+    return res.status(404).send('Note not found');
+  }
   res.status(204).json(deletedNote);
 };
 
