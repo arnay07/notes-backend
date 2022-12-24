@@ -6,7 +6,17 @@ const {
   createNote: _createNote,
 } = require('../services/NoteServices');
 
-const { nonExistingId } = require('../tests/test_helper');
+const User = require('../models/user');
+
+const jwt = require('jsonwebtoken');
+
+const getTokenFrom = (req) => {
+  const authorization = req.get('authorization');
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    return authorization.substring(7);
+  }
+  return null;
+};
 
 const getNotes = async (req, res) => {
   const notes = await _getNotes();
@@ -42,15 +52,29 @@ const deleteNoteById = async (req, res) => {
 
 const createNote = async (req, res) => {
   const body = req.body;
+  const token = getTokenFrom(req);
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+
   if (!body.content) {
     return res.status(400).json({ error: 'content missing' });
   }
+
+  if (!token || !decodedToken.id) {
+    return res.status(401).json({ error: 'token missing or invalid' });
+  }
+
+  const user = await User.findById(body.userId);
+
   const note = {
     content: body.content,
-    important: body.important || false,
+    important: body.important ?? false,
     date: new Date(),
+    user: user._id,
   };
   const createdNote = await _createNote(note);
+  user.notes = user.notes.concat(createdNote._id);
+  await user.save();
+
   res.status(201).json(createdNote);
 };
 

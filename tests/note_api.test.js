@@ -3,8 +3,21 @@ const supertest = require('supertest');
 const app = require('../app');
 const Note = require('../models/note');
 const { initialNotes, nonExistingId, notesInDb } = require('./test_helper');
+const User = require('../models/user');
 
 const api = supertest(app);
+
+let token;
+let id;
+
+beforeAll(async () => {
+  const loginResponse = await api
+    .post('/api/login')
+    .send({ username: 'tester', password: 'tester' });
+  const user = await User.findOne({ username: 'tester' });
+  token = loginResponse.body.token;
+  id = user._id;
+});
 
 beforeEach(async () => {
   await Note.deleteMany({});
@@ -38,10 +51,12 @@ describe('addition of a new note', () => {
     const newNote = {
       content: 'async/await simplifies making async calls',
       important: true,
+      userId: id,
     };
 
     await api
       .post('/api/notes')
+      .set('Authorization', `Bearer ${token}`)
       .send(newNote)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -59,7 +74,11 @@ describe('addition of a new note', () => {
       important: true,
     };
 
-    await api.post('/api/notes').send(newNote).expect(400);
+    await api
+      .post('/api/notes')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newNote)
+      .expect(400);
 
     const notesAtEnd = await notesInDb();
     expect(notesAtEnd).toHaveLength(initialNotes.length);

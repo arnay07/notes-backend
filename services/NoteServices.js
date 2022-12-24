@@ -1,6 +1,6 @@
 const Note = require('../models/note');
 
-const getNotes = () => Note.find({});
+const getNotes = () => Note.find({}).populate('user', { username: 1, name: 1 });
 
 const getNoteById = (id) => Note.findById(id);
 
