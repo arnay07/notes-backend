@@ -11,12 +11,17 @@ let token;
 let id;
 
 beforeAll(async () => {
+  await api.post('/api/users').send({
+    username: 'tester',
+    name: 'tester',
+    password: 'tester',
+  });
   const loginResponse = await api
     .post('/api/login')
     .send({ username: 'tester', password: 'tester' });
-  const user = await User.findOne({ username: 'tester' });
+  const userDb = await User.findOne({ username: 'tester' });
   token = loginResponse.body.token;
-  id = user._id;
+  id = userDb._id;
 });
 
 beforeEach(async () => {

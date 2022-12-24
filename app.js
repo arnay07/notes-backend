@@ -10,7 +10,7 @@ const {
   requestLogger,
 } = require('./utils/middleware');
 
-const usersRouter = require('./controllers/usersController');
+const usersRouter = require('./routes/UserRoutes');
 const loginRouter = require('./controllers/login');
 
 const { _info, _error } = require('./utils/logger');
