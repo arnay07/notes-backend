@@ -63,7 +63,7 @@ const createNote = async (req, res) => {
     return res.status(401).json({ error: 'token missing or invalid' });
   }
 
-  const user = await User.findById(body.userId);
+  const user = await User.findById(decodedToken.id);
 
   const note = {
     content: body.content,

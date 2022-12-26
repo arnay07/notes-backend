@@ -56,7 +56,6 @@ describe('addition of a new note', () => {
     const newNote = {
       content: 'async/await simplifies making async calls',
       important: true,
-      userId: id,
     };
 
     await api
