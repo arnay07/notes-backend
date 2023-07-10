@@ -6,7 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=production node index.js",
     "build:ui": "rm -rf build && cd ../notes/ && npm run build && cp -r build ../notes-backend",
-    "deploy": "git push heroku main",
+    "deploy": "git push",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
     "logs:prod": "heroku logs --tail",
     "dev": "NODE_ENV=development nodemon index.js",
